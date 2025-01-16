@@ -13,6 +13,8 @@
 5.  Design Decisions and Trade-offs
     
 6.  Architectural Diagram
+
+7. Setting up HTTPS with Let's Encrypt for Secure Communication  
     
 
 ----------
@@ -203,9 +205,87 @@ docker build -t <imagename> .
 ```
 
 - Once the build is completed. Run the container locally.
+
+
+
 ```
 docker-compose up -d
 ```
 
 - Open the browser and hit the URL http://localhost:8000/
+
+
+
+
+### 1. **Setting up HTTPS with Let's Encrypt for Secure Communication**
+
+You'll need to obtain a free SSL/TLS certificate from Let's Encrypt and configure your web server (e.g., Nginx or Apache) to use HTTPS.
+
+-   **Step 1:** Install Certbot (Let's Encrypt client) on your server:
+    
+    On Ubuntu:
+    
+    bash
+    
+    CopyEdit
+    
+    `sudo apt update
+    sudo apt install certbot python3-certbot-nginx` 
+    
+-   **Step 2:** Request a certificate for your domain:
+    
+    bash
+    
+    CopyEdit
+    
+    `sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com` 
+    
+-   **Step 3:** Set up automatic certificate renewal: Certbot automatically sets up a cron job to renew certificates, but you can verify this with:
+    
+    bash
+    
+    CopyEdit
+    
+    `sudo certbot renew --dry-run` 
+    
+-   **Step 4:** Verify HTTPS: Access your site at `https://yourdomain.com` to ensure it uses the new SSL certificate.
+    
+
+### 2. **Restricting SSH Access with Security Groups or Firewall Rules**
+
+You can limit SSH access using security groups (if using a cloud provider like AWS, GCP, or Azure) or firewall rules on the server itself.
+
+#### **AWS Security Group (Example)**
+
+-   Go to the EC2 console and select your instance.
+-   Under "Security" settings, edit the security group.
+-   Restrict the inbound rule for SSH (port 22) to only allow connections from specific IP addresses:
+    -   Select "SSH" and set the source to your trusted IPs, e.g., `203.0.113.0/32`.
+
+#### **Firewall (UFW) Example on Ubuntu**
+
+If you're managing a local server, use UFW to restrict SSH access:
+
+bash
+
+CopyEdit
+
+`sudo ufw allow from 203.0.113.0 to any port 22
+sudo ufw enable
+sudo ufw status` 
+
+### 3. **Using Environment Variables or a Secrets Manager to Store Sensitive Information**
+
+Instead of hardcoding sensitive information (e.g., API keys, database passwords), use environment variables or a secrets manager like AWS Secrets Manager or HashiCorp Vault.
+
+#### **Using Environment Variables**
+
+-   Store sensitive information in a `.env` file (don't commit it to version control):
+    
+    makefile
+    
+    CopyEdit
+    
+    `DB_PASSWORD=mysecretpassword
+    API_KEY=myapikey`
 
