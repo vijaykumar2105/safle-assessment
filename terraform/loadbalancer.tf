@@ -11,6 +11,7 @@ resource "aws_lb_target_group" "safle_tg" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.safle.id
+  target_type = "ip"
 }
 
 resource "aws_lb_listener" "safle_listener" {
