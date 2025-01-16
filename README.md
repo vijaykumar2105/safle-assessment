@@ -223,30 +223,22 @@ You'll need to obtain a free SSL/TLS certificate from Let's Encrypt and configur
 
 -   **Step 1:** Install Certbot (Let's Encrypt client) on your server:
     
-    On Ubuntu:
-    
-    bash
-    
-    CopyEdit
-    
-    `sudo apt update
-    sudo apt install certbot python3-certbot-nginx` 
+    ```
+    sudo apt update
+    sudo apt install certbot python3-certbot-nginx 
+    ```
     
 -   **Step 2:** Request a certificate for your domain:
-    
-    bash
-    
-    CopyEdit
-    
-    `sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com` 
+
+    ```
+    sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com 
+    ```
     
 -   **Step 3:** Set up automatic certificate renewal: Certbot automatically sets up a cron job to renew certificates, but you can verify this with:
     
-    bash
-    
-    CopyEdit
-    
-    `sudo certbot renew --dry-run` 
+    ```
+    sudo certbot renew --dry-run
+    ``` 
     
 -   **Step 4:** Verify HTTPS: Access your site at `https://yourdomain.com` to ensure it uses the new SSL certificate.
     
@@ -266,13 +258,11 @@ You can limit SSH access using security groups (if using a cloud provider like A
 
 If you're managing a local server, use UFW to restrict SSH access:
 
-bash
-
-CopyEdit
-
-`sudo ufw allow from 203.0.113.0 to any port 22
+```
+sudo ufw allow from 203.0.113.0 to any port 22
 sudo ufw enable
-sudo ufw status` 
+sudo ufw status
+``` 
 
 ### 3. **Using Environment Variables or a Secrets Manager to Store Sensitive Information**
 
@@ -282,10 +272,8 @@ Instead of hardcoding sensitive information (e.g., API keys, database passwords)
 
 -   Store sensitive information in a `.env` file (don't commit it to version control):
     
-    makefile
-    
-    CopyEdit
-    
-    `DB_PASSWORD=mysecretpassword
-    API_KEY=myapikey`
+    ```
+    DB_PASSWORD=mysecretpassword
+    API_KEY=myapikey
+    ```
 
