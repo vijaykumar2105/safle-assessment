@@ -193,3 +193,19 @@ Below is an architectural diagram illustrating the interaction between component
 The public subnets host the application load balancer, while the private subnets host the ECS services and the RDS database for improved security.
 
 ----------
+
+
+## Deploying application locally
+
+- building the docker image
+```
+docker build -t <imagename> .
+```
+
+- Once the build is completed. Run the container locally.
+```
+docker-compose up -d
+```
+
+- Open the browser and hit the URL http://localhost:8000/
+
