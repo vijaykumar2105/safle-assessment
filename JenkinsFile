@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION_EC2 = 'us-west-1'
+        ECR_REPOSITORY = 'sealentrywebapp'
+        ECS_CLUSTER = 'test-cluster'
+        ECS_SERVICE = 'webapp'
+      //DOCKER_IMAGE_TAG = "${env.BUILD_ID}-${TIMESTAMP}"
+      //DOCKER_IMAGE_URI = "<aws_account_id>.dkr.ecr.${AWS_REGION_EC2}.amazonaws.com/${ECR_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/vijaykumar2105/safle-assessment.git',
+                    credentialsId: 'cb77578c-6163-4c07-9947-35f3a393010e'
+            }
+        }
+        
+        stage('Login to ECR') {
+            steps {
+                // Use withCredentials to inject AWS credentials
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cb74e4bb-ac02-495e-8614-c09bdcf867cf']]) {
+                    // Retrieve ECR login password and log in to Docker
+                    script {
+                        def ecrPassword = sh(script: 'aws ecr get-login-password --region us-west-1', returnStdout: true).trim()
+                        sh "echo ${ecrPassword} | docker login --username AWS --password-stdin 654654532702.dkr.ecr.us-west-1.amazonaws.com"
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // Navigate to the project directory and build the Docker image
+                sh """
+                docker build -t sealentrywebapp .
+                docker tag sealentrywebapp:latest 654654532702.dkr.ecr.us-west-1.amazonaws.com/sealentrywebapp:latest
+                docker push 654654532702.dkr.ecr.us-west-1.amazonaws.com/sealentrywebapp:latest
+                """
+            }
+        }
+
+        stage('Update ECS Service') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'cb74e4bb-ac02-495e-8614-c09bdcf867cf']]) {
+                    // Update the ECS service
+                    sh 'aws ecs update-service --cluster test-cluster --service webapp --force-new-deployment --region us-west-1 --desired-count 1 --task-definition sealentrywebapp'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}
