@@ -213,6 +213,7 @@ docker-compose up -d
 ```
 
 - Open the browser and hit the URL http://localhost:8000/
+- we can you this link as for acessing the URL https://d2r5mgk1-8000.inc1.devtunnels.ms/
 
 
 
