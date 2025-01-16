@@ -94,6 +94,41 @@ This guide provides a step-by-step process to deploy the AWS infrastructure usin
         ```
         
     -   The pipeline will automatically build, test, and deploy your application.
+
+
+## Setting Up Monitoring and Alerts
+
+1.  **CloudWatch Metrics:**
+    
+    -   Enable AWS CloudWatch metrics for ECS, RDS, and the load balancer.
+        
+    -   Key metrics to monitor:
+        
+        -   ECS: CPU and memory utilization
+            
+        -   RDS: CPU, connections, and storage usage
+            
+        -   Load Balancer: Request count and latency
+            
+2.  **CloudWatch Alarms:**
+    
+    -   Set up alarms for critical metrics. For example:
+        
+        -   ECS CPU Utilization > 75%
+            
+        -   RDS Connections > 80% of the limit
+            
+        -   Load Balancer 5xx Errors > 10
+            
+3.  **Notification Configuration:**
+    
+    -   Use AWS SNS to send notifications when alarms are triggered.
+        
+    -   Subscribe email or SMS endpoints to the SNS topic.
+        
+4.  **Third-party Monitoring Tools:**
+    
+    -   Integrate tools like Datadog or New Relic for advanced monitoring and dashboards.    
         
 
 ## Design Decisions and Trade-offs
